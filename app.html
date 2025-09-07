@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Calculator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #1f2937;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #display {
+            background-color: #111827;
+            color: #f9fafb;
+            text-align: right;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 2.5rem;
+            overflow: hidden;
+            height: 4rem;
+            white-space: nowrap;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            background-color: #374151;
+            color: #e5e7eb;
+            font-size: 1.5rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            padding: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #4b5563;
+        }
+
+        .btn-operator {
+            background-color: #f59e0b;
+            color: #111827;
+        }
+        
+        .btn-operator:hover {
+            background-color: #d97706;
+        }
+
+        .btn-equals {
+            background-color: #10b981;
+            grid-column: span 2;
+        }
+        
+        .btn-equals:hover {
+            background-color: #059669;
+        }
+
+        @media (max-width: 600px) {
+            .calculator {
+                padding: 1rem;
+                width: 95%;
+            }
+            .btn {
+                font-size: 1.25rem;
+                padding: 0.75rem;
+            }
+            #display {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div id="display">0</div>
+        <div class="buttons">
+            <div class="btn" onclick="clearDisplay()">AC</div>
+            <div class="btn" onclick="deleteLast()">DEL</div>
+            <div class="btn btn-operator" onclick="appendOperator('%')">%</div>
+            <div class="btn btn-operator" onclick="appendOperator('/')">/</div>
+            <div class="btn" onclick="appendNumber('7')">7</div>
+            <div class="btn" onclick="appendNumber('8')">8</div>
+            <div class="btn" onclick="appendNumber('9')">9</div>
+            <div class="btn btn-operator" onclick="appendOperator('*')">*</div>
+            <div class="btn" onclick="appendNumber('4')">4</div>
+            <div class="btn" onclick="appendNumber('5')">5</div>
+            <div class="btn" onclick="appendNumber('6')">6</div>
+            <div class="btn btn-operator" onclick="appendOperator('-')">-</div>
+            <div class="btn" onclick="appendNumber('1')">1</div>
+            <div class="btn" onclick="appendNumber('2')">2</div>
+            <div class="btn" onclick="appendNumber('3')">3</div>
+            <div class="btn btn-operator" onclick="appendOperator('+')">+</div>
+            <div class="btn" onclick="appendNumber('0')">0</div>
+            <div class="btn" onclick="appendNumber('.')">.</div>
+            <div class="btn btn-equals" onclick="calculate()">=</div>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '';
+        let operator = null;
+        let firstOperand = null;
+        let isResultDisplayed = false;
+
+        function updateDisplay() {
+            display.textContent = currentInput || '0';
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            operator = null;
+            firstOperand = null;
+            isResultDisplayed = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput === 'Error') {
+                clearDisplay();
+                return;
+            }
+            currentInput = currentInput.slice(0, -1);
+            if (currentInput === '') {
+                updateDisplay();
+            }
+        }
+
+        function appendNumber(number) {
+            if (isResultDisplayed) {
+                currentInput = '';
+                isResultDisplayed = false;
+            }
+            if (currentInput.length >= 12) {
+                return; // Prevent overflow
+            }
+            if (number === '.' && currentInput.includes('.')) {
+                return; // Prevent multiple decimal points
+            }
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (currentInput === 'Error' || currentInput === '') {
+                return;
+            }
+            if (firstOperand !== null && operator !== null) {
+                calculate();
+            }
+            firstOperand = parseFloat(currentInput);
+            operator = op;
+            currentInput = '';
+            isResultDisplayed = false;
+        }
+
+        function calculate() {
+            if (firstOperand === null || operator === null || currentInput === '') {
+                return;
+            }
+
+            const secondOperand = parseFloat(currentInput);
+            let result = 0;
+
+            try {
+                switch (operator) {
+                    case '+':
+                        result = firstOperand + secondOperand;
+                        break;
+                    case '-':
+                        result = firstOperand - secondOperand;
+                        break;
+                    case '*':
+                        result = firstOperand * secondOperand;
+                        break;
+                    case '/':
+                        if (secondOperand === 0) {
+                            throw new Error('Division by zero');
+                        }
+                        result = firstOperand / secondOperand;
+                        break;
+                    case '%':
+                        result = firstOperand % secondOperand;
+                        break;
+                    default:
+                        result = secondOperand;
+                }
+
+                currentInput = result.toString();
+                isResultDisplayed = true;
+                firstOperand = null;
+                operator = null;
+                updateDisplay();
+            } catch (e) {
+                currentInput = 'Error';
+                isResultDisplayed = true;
+                firstOperand = null;
+                operator = null;
+                updateDisplay();
+            }
+        }
+    </script>
+</body>
+</html>
