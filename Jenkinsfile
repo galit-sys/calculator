@@ -24,6 +24,5 @@ pipeline {
         echo 'this only runs for the PRs'
       }
     }
-          
 }
 }
