@@ -1,5 +1,4 @@
 pipline {
-  agent{label "windows"}
   stages {
     stage('Hello') {
       steps {
