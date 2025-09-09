@@ -17,6 +17,7 @@ pipeline {
 			steps {
 				type README.md
 			}
+		}
 		stage('for the PR') {
 			when {
 				branch 'PR-*'
