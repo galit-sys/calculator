@@ -15,7 +15,9 @@ pipeline {
 				branch "fix-*"
 			}
 			steps {
-				type README.md
+		        bat '''
+		          type README.MD
+		          '''
 			}
 		}
 		stage('for the PR') {
