@@ -19,7 +19,7 @@ pipeline {
 			}
 		stage('for the PR') {
 			when {
-				branch \PR-*'
+				branch 'PR-*'
 			}
 			steps {
 				echo 'this is opnly run for the PRs'
