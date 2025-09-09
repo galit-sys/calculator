@@ -10,5 +10,20 @@ pipeline {
 				echo "hello from Jenkinsfile"
 				}
 			}
+		stage('for the fix branch'){
+			when {
+				branch "fix-*"
+			}
+			steps {
+				type README.md
+			}
+		stage('for the PR') {
+			when {
+				branch \PR-*'
+			}
+			steps {
+				echo 'this is opnly run for the PRs'
+			}
+		}
 		}
 	}
