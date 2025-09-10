@@ -1,10 +1,18 @@
 pipeline {
-	agent {label "windows"}
+	agent {
+		dockerfile true
+	}
 	options {
 		buildDiscarder (logRotator(artifactDaysToKeepStr:'',artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
 		disableConcurrentBuilds()
 		}
 	stages {
+		stage('Docker Example') {
+			steps {
+				echo 'Hello World! from docker'
+				sh 'echo my CustomeEnvVar = $myCustomEnvVar'
+			}
+		}
 		stage('Hello') {
 			steps {
 				echo "hello from Jenkinsfile"
